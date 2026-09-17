@@ -7,7 +7,7 @@
 
 // CHANGE THIS TO MATCH YOUR RUNNING ASP.NET CORE API PORT:
 // Examples: "https://localhost:7001", "https://localhost:5001", "http://localhost:5000"
-export const DEFAULT_API_BASE_URL = "https://localhost:44363";
+export const DEFAULT_API_BASE_URL = "https://mindaxisdev-001-site1.gtempurl.com";
 
 // Dummy WhatsApp Number (Format: country code + number without +, e.g. 919876543210)
 export const WHATSAPP_NUMBER = "919876543210";
