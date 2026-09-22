@@ -25,6 +25,7 @@ export const COMPANY_NAME = "Demo Company";
 export const ENDPOINTS = {
   ENQUIRIES: "/api/website-enquiries",
   INTERACTIONS: "/api/website-interactions",
+  VISITORS: "/api/website-visitors",
 };
 
 // Strict Backend Interaction Types

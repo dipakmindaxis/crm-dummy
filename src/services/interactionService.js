@@ -8,11 +8,13 @@ import { ENDPOINTS, INTERACTION_TYPES } from "../config/api";
 /**
  * Track Interaction (Public Endpoint - No JWT required)
  * @param {"WhatsAppClick"|"CallClick"|"GetQuoteClick"|"EmailClick"} interactionType
+ * @param {string} visitorId
  * @returns {Promise<any>}
  */
-export const trackInteraction = async (interactionType) => {
+export const trackInteraction = async (interactionType, visitorId) => {
   const payload = {
     companyCode: "CMP#102",
+    visitorId: visitorId,
     interactionType: interactionType,
   };
 

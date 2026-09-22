@@ -4,7 +4,7 @@ import Services from "../components/Services";
 import About from "../components/About";
 import EnquiryForm from "../components/EnquiryForm";
 import WhatsAppIcon from "../components/WhatsAppIcon";
-import { trackInteraction } from "../services/interactionService";
+import { useVisitorTracking } from "../context/VisitorContext";
 import { 
   WHATSAPP_NUMBER, 
   PHONE_NUMBER, 
@@ -15,40 +15,44 @@ import { Phone, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 
 export default function Home({ setActiveTab }) {
   const [loadingAction, setLoadingAction] = useState(null);
+  const { trackAction } = useVisitorTracking();
 
   const handleWhatsApp = async () => {
     setLoadingAction("whatsapp");
     try {
-      await trackInteraction(INTERACTION_TYPES.WHATSAPP);
+      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
+      });
     } catch (err) {
       console.warn("Contact section WhatsApp tracking error:", err);
     } finally {
       setLoadingAction(null);
-      window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleCall = async () => {
     setLoadingAction("call");
     try {
-      await trackInteraction(INTERACTION_TYPES.CALL);
+      await trackAction(INTERACTION_TYPES.CALL, () => {
+        window.location.href = `tel:${PHONE_NUMBER}`;
+      });
     } catch (err) {
       console.warn("Contact section Call tracking error:", err);
     } finally {
       setLoadingAction(null);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     }
   };
 
   const handleEmail = async () => {
     setLoadingAction("email");
     try {
-      await trackInteraction(INTERACTION_TYPES.EMAIL);
+      await trackAction(INTERACTION_TYPES.EMAIL, () => {
+        window.location.href = `mailto:${EMAIL_ADDRESS}`;
+      });
     } catch (err) {
       console.warn("Contact section Email tracking error:", err);
     } finally {
       setLoadingAction(null);
-      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     }
   };
 

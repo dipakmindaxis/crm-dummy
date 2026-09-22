@@ -1,45 +1,47 @@
 import React, { useState } from "react";
-import { trackInteraction } from "../services/interactionService";
+import { useVisitorTracking } from "../context/VisitorContext";
 import { COMPANY_NAME, WHATSAPP_NUMBER, INTERACTION_TYPES } from "../config/api";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { Building2, Menu, X, ArrowRight, Activity, Globe } from "lucide-react";
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { trackAction } = useVisitorTracking();
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [whatsappLoading, setWhatsappLoading] = useState(false);
 
   const handleWhatsAppClick = async () => {
     setWhatsappLoading(true);
     try {
-      await trackInteraction(INTERACTION_TYPES.WHATSAPP);
+      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
+      });
     } catch (err) {
       console.warn("Navbar WhatsApp tracking error:", err);
     } finally {
       setWhatsappLoading(false);
-      window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleGetQuoteClick = async () => {
     setQuoteLoading(true);
     try {
-      await trackInteraction(INTERACTION_TYPES.GET_QUOTE);
+      await trackAction(INTERACTION_TYPES.GET_QUOTE, () => {
+        if (activeTab !== "home") {
+          setActiveTab("home");
+          setTimeout(() => {
+            const formElement = document.getElementById("enquiry-form");
+            if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
+          }, 150);
+        } else {
+          const formElement = document.getElementById("enquiry-form");
+          if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
+        }
+      });
     } catch (err) {
       console.warn("Interaction tracking recorded error, proceeding with scroll:", err);
     } finally {
       setQuoteLoading(false);
-    }
-
-    if (activeTab !== "home") {
-      setActiveTab("home");
-      setTimeout(() => {
-        const formElement = document.getElementById("enquiry-form");
-        if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
-      }, 150);
-    } else {
-      const formElement = document.getElementById("enquiry-form");
-      if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
     }
   };
 

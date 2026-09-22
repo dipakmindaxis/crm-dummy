@@ -27,8 +27,8 @@ export default function EnquiryForm() {
     const cleanedPhone = formData.phoneNumber.replace(/[\s\-\(\)\+]/g, "");
     if (!formData.phoneNumber.trim()) {
       errs.phoneNumber = "Phone number is required.";
-    } else if (!/^\d{7,15}$/.test(cleanedPhone)) {
-      errs.phoneNumber = "Please enter a valid phone number (7 to 15 digits).";
+    } else if (!/^\d{10}$/.test(cleanedPhone)) {
+      errs.phoneNumber = "Please enter a valid 10-digit phone number.";
     }
 
     // Email optional, but if entered it should be valid

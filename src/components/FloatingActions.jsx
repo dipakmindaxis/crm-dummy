@@ -1,33 +1,36 @@
 import React, { useState } from "react";
-import { trackInteraction } from "../services/interactionService";
+import { useVisitorTracking } from "../context/VisitorContext";
 import { WHATSAPP_NUMBER, PHONE_NUMBER, INTERACTION_TYPES } from "../config/api";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { PhoneCall } from "lucide-react";
 
 export default function FloatingActions() {
   const [loadingAction, setLoadingAction] = useState(null);
+  const { trackAction } = useVisitorTracking();
 
   const handleWhatsApp = async () => {
     setLoadingAction("whatsapp");
     try {
-      await trackInteraction(INTERACTION_TYPES.WHATSAPP);
+      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
+      });
     } catch (err) {
       console.warn("Floating WhatsApp API tracking error:", err);
     } finally {
       setLoadingAction(null);
-      window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleCall = async () => {
     setLoadingAction("call");
     try {
-      await trackInteraction(INTERACTION_TYPES.CALL);
+      await trackAction(INTERACTION_TYPES.CALL, () => {
+        window.location.href = `tel:${PHONE_NUMBER}`;
+      });
     } catch (err) {
       console.warn("Floating Call API tracking error:", err);
     } finally {
       setLoadingAction(null);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     }
   };
 
