@@ -4,7 +4,7 @@ import Services from "../components/Services";
 import About from "../components/About";
 import EnquiryForm from "../components/EnquiryForm";
 import WhatsAppIcon from "../components/WhatsAppIcon";
-import { useVisitorTracking } from "../context/VisitorContext";
+import { trackInteraction } from "../services/interactionService";
 import { 
   WHATSAPP_NUMBER, 
   PHONE_NUMBER, 
@@ -15,29 +15,19 @@ import { Phone, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 
 export default function Home({ setActiveTab }) {
   const [loadingAction, setLoadingAction] = useState(null);
-  const { trackAction } = useVisitorTracking();
 
-  const handleWhatsApp = async () => {
-    setLoadingAction("whatsapp");
-    try {
-      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
-      });
-    } catch (err) {
-      console.warn("Contact section WhatsApp tracking error:", err);
-    } finally {
-      setLoadingAction(null);
-    }
+  const handleWhatsApp = () => {
+    window.dispatchEvent(new CustomEvent("openWhatsAppModal"));
   };
 
   const handleCall = async () => {
     setLoadingAction("call");
     try {
-      await trackAction(INTERACTION_TYPES.CALL, () => {
-        window.location.href = `tel:${PHONE_NUMBER}`;
-      });
+      await trackInteraction(INTERACTION_TYPES.CALL);
+      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
-      console.warn("Contact section Call tracking error:", err);
+      console.error("Call tracking failed:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
     }
@@ -46,11 +36,11 @@ export default function Home({ setActiveTab }) {
   const handleEmail = async () => {
     setLoadingAction("email");
     try {
-      await trackAction(INTERACTION_TYPES.EMAIL, () => {
-        window.location.href = `mailto:${EMAIL_ADDRESS}`;
-      });
+      await trackInteraction(INTERACTION_TYPES.EMAIL);
+      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     } catch (err) {
-      console.warn("Contact section Email tracking error:", err);
+      console.error("Email tracking failed:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
     }

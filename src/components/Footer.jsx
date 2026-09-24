@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useVisitorTracking } from "../context/VisitorContext";
+import { trackInteraction } from "../services/interactionService";
 import { 
   COMPANY_NAME, 
   WHATSAPP_NUMBER, 
@@ -12,29 +12,19 @@ import { Building2, Phone, Mail, ArrowRight, ShieldCheck, Heart } from "lucide-r
 
 export default function Footer({ setActiveTab }) {
   const [loadingAction, setLoadingAction] = useState(null);
-  const { trackAction } = useVisitorTracking();
 
-  const handleWhatsApp = async () => {
-    setLoadingAction("whatsapp");
-    try {
-      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
-      });
-    } catch (err) {
-      console.warn("Footer WhatsApp API tracking error:", err);
-    } finally {
-      setLoadingAction(null);
-    }
+  const handleWhatsApp = () => {
+    window.dispatchEvent(new CustomEvent("openWhatsAppModal"));
   };
 
   const handleCall = async () => {
     setLoadingAction("call");
     try {
-      await trackAction(INTERACTION_TYPES.CALL, () => {
-        window.location.href = `tel:${PHONE_NUMBER}`;
-      });
+      await trackInteraction(INTERACTION_TYPES.CALL);
+      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
-      console.warn("Footer Call API tracking error:", err);
+      console.error("Footer Call tracking error:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
     }
@@ -43,28 +33,11 @@ export default function Footer({ setActiveTab }) {
   const handleEmail = async () => {
     setLoadingAction("email");
     try {
-      await trackAction(INTERACTION_TYPES.EMAIL, () => {
-        window.location.href = `mailto:${EMAIL_ADDRESS}`;
-      });
+      await trackInteraction(INTERACTION_TYPES.EMAIL);
+      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     } catch (err) {
-      console.warn("Footer Email API tracking error:", err);
-    } finally {
-      setLoadingAction(null);
-    }
-  };
-
-  const handleGetQuote = async () => {
-    setLoadingAction("quote");
-    try {
-      await trackAction(INTERACTION_TYPES.GET_QUOTE, () => {
-        if (setActiveTab) setActiveTab("home");
-        setTimeout(() => {
-          const formEl = document.getElementById("enquiry-form");
-          if (formEl) formEl.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-      });
-    } catch (err) {
-      console.warn("Footer Get Quote API tracking error:", err);
+      console.error("Footer Email tracking error:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
     }
@@ -195,7 +168,6 @@ export default function Footer({ setActiveTab }) {
               {/* WhatsApp */}
               <button
                 onClick={handleWhatsApp}
-                disabled={loadingAction === "whatsapp"}
                 className="w-full text-left px-3 py-2 bg-slate-900 hover:bg-slate-800 rounded-lg text-xs flex items-center justify-between text-slate-300 hover:text-white border border-slate-800 transition"
               >
                 <span className="flex items-center gap-2">
@@ -203,15 +175,6 @@ export default function Footer({ setActiveTab }) {
                   <span>WhatsApp: +{WHATSAPP_NUMBER}</span>
                 </span>
                 <ArrowRight className="w-3 h-3 text-slate-600" />
-              </button>
-
-              {/* Get Quote */}
-              <button
-                onClick={handleGetQuote}
-                disabled={loadingAction === "quote"}
-                className="w-full text-center px-3 py-2 bg-brand-600 hover:bg-brand-500 rounded-lg text-xs font-bold text-white transition shadow-md shadow-brand-500/20"
-              >
-                {loadingAction === "quote" ? "Recording..." : "Request a Quote (Tracked)"}
               </button>
             </div>
           </div>

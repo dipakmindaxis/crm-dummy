@@ -8,18 +8,8 @@ export default function Hero() {
   const [loadingAction, setLoadingAction] = useState(null);
 
   // WhatsApp Button Click Handler
-  const handleWhatsAppClick = async () => {
-    setLoadingAction("whatsapp");
-    try {
-      await trackInteraction(INTERACTION_TYPES.WHATSAPP);
-    } catch (err) {
-      console.warn("API interaction failed, opening WhatsApp anyway:", err);
-    } finally {
-      setLoadingAction(null);
-      // Open WhatsApp in new tab
-      const waUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`;
-      window.open(waUrl, "_blank", "noopener,noreferrer");
-    }
+  const handleWhatsAppClick = () => {
+    window.dispatchEvent(new CustomEvent("openWhatsAppModal"));
   };
 
   // Call Button Click Handler
@@ -27,25 +17,12 @@ export default function Hero() {
     setLoadingAction("call");
     try {
       await trackInteraction(INTERACTION_TYPES.CALL);
-    } catch (err) {
-      console.warn("API interaction failed, initiating call anyway:", err);
-    } finally {
-      setLoadingAction(null);
       window.location.href = `tel:${PHONE_NUMBER}`;
-    }
-  };
-
-  // Get Quote Button Click Handler
-  const handleGetQuoteClick = async () => {
-    setLoadingAction("quote");
-    try {
-      await trackInteraction(INTERACTION_TYPES.GET_QUOTE);
     } catch (err) {
-      console.warn("API interaction failed, proceeding to form:", err);
+      console.error("API interaction failed, initiating call anyway:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
-      const formEl = document.getElementById("enquiry-form");
-      if (formEl) formEl.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -84,16 +61,6 @@ export default function Hero() {
 
             {/* Action Buttons Grid */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              {/* Get Quote Button */}
-              <button
-                id="hero-get-quote-btn"
-                onClick={handleGetQuoteClick}
-                disabled={loadingAction === "quote"}
-                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-sky-600 hover:from-brand-700 hover:to-sky-700 rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/35 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <span>{loadingAction === "quote" ? "Tracking..." : "Get a Quote"}</span>
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </button>
 
               {/* Contact Us Button */}
               <button
@@ -107,12 +74,11 @@ export default function Hero() {
               <button
                 id="hero-whatsapp-btn"
                 onClick={handleWhatsAppClick}
-                disabled={loadingAction === "whatsapp"}
                 className="inline-flex items-center justify-center px-5 py-3.5 text-sm font-bold text-white bg-[#25D366] hover:bg-[#20bd5a] rounded-xl shadow-md hover:shadow-lg transition-all"
                 title={`Chat with us on WhatsApp (${WHATSAPP_NUMBER})`}
               >
                 <WhatsAppIcon className="w-4 h-4 mr-2" />
-                <span>{loadingAction === "whatsapp" ? "Logging..." : "WhatsApp"}</span>
+                <span>WhatsApp</span>
               </button>
 
               {/* Call Button */}
@@ -180,7 +146,7 @@ export default function Hero() {
 
               <div className="pt-2 text-center">
                 <p className="text-xs text-slate-500">
-                  Every click on WhatsApp, Call, Email, and Get Quote immediately sends an HTTP request to your configured ASP.NET Core API.
+                  Every click on Call and Email immediately sends an HTTP request to your configured ASP.NET Core API.
                 </p>
               </div>
             </div>

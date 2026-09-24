@@ -118,12 +118,7 @@ export default function ApiTesting() {
     runApiTest("Test Call API (POST /api/website-interactions)", trackInteraction(INTERACTION_TYPES.CALL));
   };
 
-  // 4. Test Get Quote API (POST)
-  const testGetQuoteApi = () => {
-    runApiTest("Test Get Quote API (POST /api/website-interactions)", trackInteraction(INTERACTION_TYPES.GET_QUOTE));
-  };
-
-  // 5. Test Email API (POST)
+  // 4. Test Email API (POST)
   const testEmailApi = () => {
     runApiTest("Test Email API (POST /api/website-interactions)", trackInteraction(INTERACTION_TYPES.EMAIL));
   };
@@ -316,33 +311,13 @@ export default function ApiTesting() {
                 </button>
               </div>
 
-              {/* 4. Test Get Quote API */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">4</span>
-                    <span className="text-sm font-bold text-slate-900">Test Get Quote API</span>
-                  </div>
-                  <code className="text-[11px] font-mono text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
-                    interactionType: "GetQuoteClick"
-                  </code>
-                </div>
 
-                <button
-                  onClick={testGetQuoteApi}
-                  disabled={isLoading}
-                  className="w-full py-2.5 px-4 text-xs font-bold text-indigo-900 bg-indigo-100 hover:bg-indigo-200 rounded-xl border border-indigo-300 shadow-sm transition flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  <FileText className="w-3.5 h-3.5 text-indigo-700" />
-                  <span>Test Get Quote API</span>
-                </button>
-              </div>
 
               {/* 5. Test Email API */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-amber-600 text-white text-xs font-bold flex items-center justify-center">5</span>
+                    <span className="w-6 h-6 rounded-full bg-amber-600 text-white text-xs font-bold flex items-center justify-center">4</span>
                     <span className="text-sm font-bold text-slate-900">Test Email API</span>
                   </div>
                   <code className="text-[11px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
@@ -664,7 +639,6 @@ export default function ApiTesting() {
                         <span className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold ${
                           item.interactionType === 'WhatsAppClick' ? 'bg-emerald-100 text-emerald-800' :
                           item.interactionType === 'CallClick' ? 'bg-sky-100 text-sky-800' :
-                          item.interactionType === 'GetQuoteClick' ? 'bg-indigo-100 text-indigo-800' :
                           'bg-amber-100 text-amber-800'
                         }`}>
                           {item.interactionType}

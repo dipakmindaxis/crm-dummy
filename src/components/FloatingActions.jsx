@@ -1,34 +1,24 @@
 import React, { useState } from "react";
-import { useVisitorTracking } from "../context/VisitorContext";
+import { trackInteraction } from "../services/interactionService";
 import { WHATSAPP_NUMBER, PHONE_NUMBER, INTERACTION_TYPES } from "../config/api";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { PhoneCall } from "lucide-react";
 
 export default function FloatingActions() {
   const [loadingAction, setLoadingAction] = useState(null);
-  const { trackAction } = useVisitorTracking();
 
-  const handleWhatsApp = async () => {
-    setLoadingAction("whatsapp");
-    try {
-      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
-      });
-    } catch (err) {
-      console.warn("Floating WhatsApp API tracking error:", err);
-    } finally {
-      setLoadingAction(null);
-    }
+  const handleWhatsApp = () => {
+    window.dispatchEvent(new CustomEvent("openWhatsAppModal"));
   };
 
   const handleCall = async () => {
     setLoadingAction("call");
     try {
-      await trackAction(INTERACTION_TYPES.CALL, () => {
-        window.location.href = `tel:${PHONE_NUMBER}`;
-      });
+      await trackInteraction(INTERACTION_TYPES.CALL);
+      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
-      console.warn("Floating Call API tracking error:", err);
+      console.error("Floating Call tracking error:", err);
+      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
       setLoadingAction(null);
     }
@@ -57,7 +47,6 @@ export default function FloatingActions() {
         type="button"
         id="floating-whatsapp-btn"
         onClick={handleWhatsApp}
-        disabled={loadingAction === "whatsapp"}
         className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-2xl hover:scale-110 active:scale-95 transition-all shadow-[#25D366]/40"
         aria-label="WhatsApp Chat"
         title="Chat on WhatsApp (Tracked API Interaction)"

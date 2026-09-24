@@ -16,9 +16,12 @@ export const submitEnquiry = async ({ name, phoneNumber, email, message }) => {
     companyCode: "CMP#102",
     name: name?.trim() || "",
     phoneNumber: phoneNumber?.trim() || "",
-    email: email?.trim() || "",
     message: message?.trim() || "",
   };
+  
+  if (email !== undefined) {
+    payload.email = email?.trim() || "";
+  }
 
   const response = await apiClient.post(ENDPOINTS.ENQUIRIES, payload);
   return response.data;

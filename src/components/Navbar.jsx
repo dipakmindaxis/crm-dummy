@@ -1,48 +1,13 @@
 import React, { useState } from "react";
-import { useVisitorTracking } from "../context/VisitorContext";
-import { COMPANY_NAME, WHATSAPP_NUMBER, INTERACTION_TYPES } from "../config/api";
+import { COMPANY_NAME, WHATSAPP_NUMBER } from "../config/api";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { Building2, Menu, X, ArrowRight, Activity, Globe } from "lucide-react";
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { trackAction } = useVisitorTracking();
-  const [quoteLoading, setQuoteLoading] = useState(false);
-  const [whatsappLoading, setWhatsappLoading] = useState(false);
 
-  const handleWhatsAppClick = async () => {
-    setWhatsappLoading(true);
-    try {
-      await trackAction(INTERACTION_TYPES.WHATSAPP, () => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}`, "_blank", "noopener,noreferrer");
-      });
-    } catch (err) {
-      console.warn("Navbar WhatsApp tracking error:", err);
-    } finally {
-      setWhatsappLoading(false);
-    }
-  };
-
-  const handleGetQuoteClick = async () => {
-    setQuoteLoading(true);
-    try {
-      await trackAction(INTERACTION_TYPES.GET_QUOTE, () => {
-        if (activeTab !== "home") {
-          setActiveTab("home");
-          setTimeout(() => {
-            const formElement = document.getElementById("enquiry-form");
-            if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
-          }, 150);
-        } else {
-          const formElement = document.getElementById("enquiry-form");
-          if (formElement) formElement.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    } catch (err) {
-      console.warn("Interaction tracking recorded error, proceeding with scroll:", err);
-    } finally {
-      setQuoteLoading(false);
-    }
+  const handleWhatsAppClick = () => {
+    window.dispatchEvent(new CustomEvent("openWhatsAppModal"));
   };
 
   const navigateToSection = (sectionId) => {
@@ -131,22 +96,11 @@ export default function Navbar({ activeTab, setActiveTab }) {
           <button
             id="nav-whatsapp-btn"
             onClick={handleWhatsAppClick}
-            disabled={whatsappLoading}
             className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-[#25D366] hover:bg-[#20bd5a] rounded-xl shadow-md hover:shadow-lg transition-all"
             title={`Chat on WhatsApp (${WHATSAPP_NUMBER})`}
           >
             <WhatsAppIcon className="w-4 h-4 mr-1.5" />
-            <span>{whatsappLoading ? "Logging..." : "WhatsApp"}</span>
-          </button>
-
-          <button
-            id="nav-get-quote-btn"
-            onClick={handleGetQuoteClick}
-            disabled={quoteLoading}
-            className="group relative inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white transition-all bg-gradient-to-r from-brand-600 to-sky-500 rounded-xl shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/35 hover:-translate-y-0.5 active:translate-y-0"
-          >
-            <span>{quoteLoading ? "Tracking..." : "Get Quote"}</span>
-            <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1" />
+            <span>WhatsApp</span>
           </button>
         </div>
 
@@ -209,7 +163,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
             </span>
             <ArrowRight className="w-4 h-4" />
           </button>
-          <div className="pt-2 grid grid-cols-2 gap-2">
+          <div className="pt-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -219,15 +173,6 @@ export default function Navbar({ activeTab, setActiveTab }) {
             >
               <WhatsAppIcon className="w-4 h-4" />
               <span>WhatsApp</span>
-            </button>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleGetQuoteClick();
-              }}
-              className="w-full py-2.5 text-center text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md"
-            >
-              Get Quote
             </button>
           </div>
         </div>

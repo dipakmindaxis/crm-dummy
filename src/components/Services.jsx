@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { trackInteraction } from "../services/interactionService";
-import { INTERACTION_TYPES } from "../config/api";
-import { Globe, Code2, Cpu, LineChart, ArrowRight, CheckCircle2 } from "lucide-react";
+import React from "react";
+import { Globe, Code2, Cpu, LineChart, CheckCircle2 } from "lucide-react";
 
 export default function Services() {
-  const [loadingService, setLoadingService] = useState(null);
-
   const services = [
     {
       id: "web-dev",
@@ -41,26 +37,6 @@ export default function Services() {
     },
   ];
 
-  const handleServiceGetQuote = async (serviceName) => {
-    setLoadingService(serviceName);
-    try {
-      await trackInteraction(INTERACTION_TYPES.GET_QUOTE);
-    } catch (err) {
-      console.warn("Get Quote interaction logging failed, continuing scroll:", err);
-    } finally {
-      setLoadingService(null);
-      const formEl = document.getElementById("enquiry-form");
-      if (formEl) {
-        formEl.scrollIntoView({ behavior: "smooth" });
-        // Optionally focus the message field with prefilled interest
-        const messageInput = document.getElementById("enquiry-message");
-        if (messageInput && !messageInput.value) {
-          messageInput.value = `I am interested in a quote for ${serviceName}.`;
-        }
-      }
-    }
-  };
-
   return (
     <section id="services" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,7 +50,7 @@ export default function Services() {
             High-Impact Services Tailored for Your Growth
           </h2>
           <p className="text-slate-600 text-base">
-            Explore our specialized development and digital capabilities. Every "Get Quote" action dispatches real-time telemetry to your ASP.NET Core API.
+            Explore our specialized development and digital capabilities.
           </p>
         </div>
 
@@ -113,17 +89,6 @@ export default function Services() {
                     ))}
                   </ul>
                 </div>
-
-                {/* Get Quote Action Button */}
-                <button
-                  id={`service-quote-btn-${srv.id}`}
-                  onClick={() => handleServiceGetQuote(srv.title)}
-                  disabled={isLoading}
-                  className="w-full mt-auto inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-slate-800 bg-white hover:bg-brand-600 hover:text-white rounded-xl border border-slate-300 hover:border-brand-600 shadow-sm transition-all group-hover:shadow"
-                >
-                  <span>{isLoading ? "Recording Click..." : "Get Quote"}</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                </button>
               </div>
             );
           })}
