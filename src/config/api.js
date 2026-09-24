@@ -24,6 +24,7 @@ export const COMPANY_NAME = "Demo Company";
 // ASP.NET Core API Endpoints
 export const ENDPOINTS = {
   ENQUIRIES: "/api/website-enquiries",
+  WHATSAPP_ENQUIRIES: "/api/whatsapp-enquiries",
   INTERACTIONS: "/api/website-interactions",
 };
 

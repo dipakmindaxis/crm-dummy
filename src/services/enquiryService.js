@@ -28,6 +28,23 @@ export const submitEnquiry = async ({ name, phoneNumber, email, message }) => {
 };
 
 /**
+ * Submit WhatsApp Enquiry (Public Endpoint - No JWT required)
+ * @param {Object} enquiryData - { name, phoneNumber, service }
+ * @returns {Promise<any>}
+ */
+export const submitWhatsAppEnquiry = async ({ name, phoneNumber, service }) => {
+  const payload = {
+    companyCode: "CMP#102",
+    name: name?.trim() || "",
+    phoneNumber: phoneNumber?.trim() || "",
+    service: service?.trim() || "",
+  };
+
+  const response = await apiClient.post(ENDPOINTS.WHATSAPP_ENQUIRIES, payload);
+  return response.data;
+};
+
+/**
  * Helper to build auth headers with provided or stored token
  */
 const buildAuthHeaders = (token) => {

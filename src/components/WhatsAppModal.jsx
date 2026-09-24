@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { submitEnquiry } from "../services/enquiryService";
+import { submitWhatsAppEnquiry } from "../services/enquiryService";
 import { User, Phone, RefreshCw, Send, AlertCircle, X, CheckCircle2, MessageSquare } from "lucide-react";
 import { WHATSAPP_NUMBER } from "../config/api";
 import WhatsAppIcon from "./WhatsAppIcon";
@@ -65,11 +65,11 @@ export default function WhatsAppModal() {
     setApiError(null);
 
     try {
-      // Map Service to Message
-      await submitEnquiry({
+      // Post WhatsApp Enquiry
+      await submitWhatsAppEnquiry({
         name: formData.name,
         phoneNumber: formData.phoneNumber,
-        message: formData.service,
+        service: formData.service,
       });
 
       // Clear state and close
