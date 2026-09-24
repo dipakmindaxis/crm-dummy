@@ -58,7 +58,6 @@ export default function Services() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((srv) => {
             const IconComponent = srv.icon;
-            const isLoading = loadingService === srv.title;
 
             return (
               <div
