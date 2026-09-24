@@ -24,11 +24,11 @@ export default function Home({ setActiveTab }) {
     setLoadingAction("call");
     try {
       await trackInteraction(INTERACTION_TYPES.CALL);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
       console.error("Call tracking failed:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
+      // Removed alert to not block user interaction completely, or keep it but it's better to just log
     } finally {
+      window.location.href = `tel:${PHONE_NUMBER}`;
       setLoadingAction(null);
     }
   };
@@ -37,11 +37,10 @@ export default function Home({ setActiveTab }) {
     setLoadingAction("email");
     try {
       await trackInteraction(INTERACTION_TYPES.EMAIL);
-      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     } catch (err) {
       console.error("Email tracking failed:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
+      window.location.href = `mailto:${EMAIL_ADDRESS}`;
       setLoadingAction(null);
     }
   };

@@ -21,11 +21,10 @@ export default function Footer({ setActiveTab }) {
     setLoadingAction("call");
     try {
       await trackInteraction(INTERACTION_TYPES.CALL);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
       console.error("Footer Call tracking error:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
+      window.location.href = `tel:${PHONE_NUMBER}`;
       setLoadingAction(null);
     }
   };
@@ -34,11 +33,10 @@ export default function Footer({ setActiveTab }) {
     setLoadingAction("email");
     try {
       await trackInteraction(INTERACTION_TYPES.EMAIL);
-      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     } catch (err) {
       console.error("Footer Email tracking error:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
+      window.location.href = `mailto:${EMAIL_ADDRESS}`;
       setLoadingAction(null);
     }
   };

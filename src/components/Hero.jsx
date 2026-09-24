@@ -17,11 +17,10 @@ export default function Hero() {
     setLoadingAction("call");
     try {
       await trackInteraction(INTERACTION_TYPES.CALL);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
       console.error("API interaction failed, initiating call anyway:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
+      window.location.href = `tel:${PHONE_NUMBER}`;
       setLoadingAction(null);
     }
   };

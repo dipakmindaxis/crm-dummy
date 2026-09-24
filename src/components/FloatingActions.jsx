@@ -15,11 +15,10 @@ export default function FloatingActions() {
     setLoadingAction("call");
     try {
       await trackInteraction(INTERACTION_TYPES.CALL);
-      window.location.href = `tel:${PHONE_NUMBER}`;
     } catch (err) {
       console.error("Floating Call tracking error:", err);
-      alert("Failed to track interaction: " + (err.message || "Network Error"));
     } finally {
+      window.location.href = `tel:${PHONE_NUMBER}`;
       setLoadingAction(null);
     }
   };
